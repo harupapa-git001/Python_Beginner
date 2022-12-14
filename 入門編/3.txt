@@ -164,8 +164,68 @@ print("合計金額は:" + str(total) + "円です")
 合計金額は:972円です
 
 
-
-
 文字列とリストのメソッドを使う
 
+#以下コピペで動きます
+
+text = "pYthon"
+print(text)
+print(text.capitalize()) # Pythonが用意しているメソッド
+print(text.upper()) # Pythonが用意しているメソッド
+print(text.lower())
+
+name = "私,あなた,彼,彼女"
+
+list = name.split(",")
+print(list)
+
+list.remove("あなた")
+print(list)
+
+list.append("社長")
+print(list)
+
+#コピペここまで
+
+出力結果:
+pYthon
+Python
+PYTHON
+python
+['私', 'あなた', '彼', '彼女']
+['私', '彼', '彼女']
+['私', '彼', '彼女', '社長']
+
+
 アクセス制限を理解する
+
+メソッド名の前にアンダーバー2つ ( __ ) をつけるとクラスの中でしか呼び出せないメソッドになる(プライベートメソッドと呼ぶ)
+
+#以下コピペで動きます
+
+class Greeting:
+    def __init__(self, human, yesterday):
+        self.human = human
+        self.__yesterday = yesterday
+
+    def work(self):
+        print(self.human + "は道端を歩いていた")
+
+    def __meet(self, pets):
+        print(self.__yesterday + "は" + pets + "にであった。")
+
+say = Greeting("私", "昨日")
+say.work()
+
+#say.__meet("猫") # コメントアウトを外すとプライベートメソッドの影響でエラーになる
+#print(say.__yesterday) #プライベート変数(プライベートプロパティ)にしているのでクラスの外から呼び出せない
+
+#コピペここまで
+
+出力結果:
+私は道端を歩いていた
+
+クラスの外でしか呼び出せない変数をプライベート変数またはプライベートプロパティと呼ぶ
+
+------------------ここまでGitHub push済---------------------
+4.txtへ
