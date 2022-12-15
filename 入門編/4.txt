@@ -1,0 +1,621 @@
+クラスの詳細
+
+クラスの継承
+
+class A というクラスがあった場合、その機能をもった class B を作成できる(機能の追加も可能)
+
+上記の場合元となる class A は親クラスまたはスーパークラスと呼ばれ、 class B は子クラス/サブクラスと呼ばれる
+
+#以下コピペで動きます
+
+class Greeting: #親クラス/スーパークラス
+    def __init__(self, human, yesterday):
+        self.human = human
+        self.yesterday = yesterday
+
+    def work(self):
+        print(self.human + "は道端を歩いていた")
+
+    def meet(self, pets):
+        print(self.yesterday + "は" + pets + "にであった。")
+
+class Playful(Greeting): # Greetingクラスの継承(子クラス/サブクラス)
+   
+    def dog_barking(self, pets): # Greetingクラスのmeetメソッドの引数 pets が継承されている
+        print("わんわん、" + pets + "はじゃれて欲しそうにみている")
+
+say = Greeting("私", "昨日")
+say.work()
+say.meet("猫")
+
+cry = Playful("私", "今日") # Greetingクラスのコンストラクタ human, yesterday が継承されている
+cry.work() # Playfulクラス( = cry クラス変数)からGreetingクラスのworkメソッドを呼び出し
+cry.meet("犬") # Playfulクラス( = cry クラス変数)からGreetingクラスのmeetメソッドを呼び出し
+cry.dog_barking("犬") #Greetingクラスを継承しているので pets に"犬"が割り当てられる
+
+#コピペここまで
+
+出力結果:
+私は道端を歩いていた
+昨日は猫にであった。
+私は道端を歩いていた
+今日は犬にであった。
+わんわん、犬はじゃれて欲しそうにみている
+
+
+
+オーバーライドについて
+
+class A で作成されたオブジェクト(メソッド)に新しい機能を追加したい場合 class B で(同じ名前のメソッドで)新たに作ることができる
+
+#以下コピペで動きます
+
+class Greeting: #親クラス/スーパークラス
+    def __init__(self, human, yesterday):
+        self.human = human
+        self.yesterday = yesterday
+
+    def work(self):
+        print(self.human + "は道端を歩いていた")
+
+    def meet(self, pets):
+        print(self.yesterday + "は" + pets + "にであった。")
+
+class Playful(Greeting): # Greetingクラスの継承(子クラス/サブクラス)
+   
+    def dog_barking(self, pets): # Greetingクラスのmeetメソッドの引数 pets が継承されている
+        print("わんわん、" + pets + "はじゃれて欲しそうにみている")
+
+    def work(self, human):
+        print(self.human + "は道端を走っていた")
+
+    def meet(self, pets):
+        print(self.yesterday + "は" + pets + "にほえられた。")
+
+say = Greeting("私", "昨日")
+say.work()
+say.meet("猫")
+
+cry = Playful("私", "今日") # Greetingクラスのコンストラクタ human, yesterday が継承されている
+cry.work("社長") # オブジェクト作成時に"私"と入っているので"社長"が無効
+cry.meet("犬") # オーバーライドされたPlayfulクラスのmeetメソッドを呼び出し
+cry.dog_barking("犬") #Greetingクラスを継承しているので pets に"犬"が割り当てられる
+
+#コピペここまで
+
+出力結果:
+私は道端を歩いていた
+昨日は猫にであった。
+私は道端を走っていた
+今日は犬にほえられた。
+わんわん、犬はじゃれて欲しそうにみている
+
+
+#以下コピペで動きます
+
+class Greeting: #親クラス/スーパークラス
+    def __init__(self): #コンストラクタの変数に文字列を直接入力したので引数が要らない
+        self.human = "私"
+        self.yesterday = "昨日"
+
+    def work(self):
+        print(self.human + "は道端を歩いていた")
+
+    def meet(self, pets):
+        print(self.yesterday + "は" + pets + "にであった。")
+
+class Playful(Greeting): # Greetingクラスの継承(子クラス/サブクラス)
+   
+    def dog_barking(self, pets): # Greetingクラスのmeetメソッドの引数 pets が継承されている
+        print("わんわん、" + pets + "はじゃれて欲しそうにみている")
+
+    def work(self, human):
+        self.human = human # Playfulで再定義することでこちらが有効
+        print(self.human + "は道端を走っていた")
+
+    def meet(self, pets, today):
+        self.today = today
+        print(self.today + "は" + pets + "にほえられた。")
+
+say = Greeting()
+say.work()
+say.meet("猫")
+
+cry = Playful() # Greetingクラスのコンストラクタ human, yesterday が継承されている
+cry.work("社長") # "私"と入っていたself.human変数をPlayfulクラス内のworkメソッドで再定義したことで"社長"が有効
+cry.meet("犬", "今日") # オーバーライドされたPlayfulクラスのmeetメソッドを呼び出し
+cry.dog_barking("犬") #Greetingクラスを継承しているので pets に"犬"が割り当てられる
+
+#コピペここまで
+
+出力結果:
+私は道端を歩いていた
+昨日は猫にであった。
+社長は道端を走っていた
+今日は犬にほえられた。
+わんわん、犬はじゃれて欲しそうにみている
+
+
+リストを使った例
+
+#以下コピペで動きます
+
+class Playful:
+    def __init__(self, human, pets):
+        self.human = human
+        self.pets = pets
+
+    def meet(self):
+        print(self.human + "は" + self.pets + "にほえられた。")
+
+my = Playful("私", "柴犬") # コンストラクタ　__init__(self, human, pets): の第2、第3引数に対応している
+president = Playful("社長", "マルチーズ")
+
+humanlist = [my, president]
+
+for humanchoice in humanlist:
+    humanchoice.meet()
+
+#コピペここまで
+
+出力結果:
+私は柴犬にほえられた。
+社長はマルチーズにほえられた。
+
+petsにそれぞれ別の動物を割り当てたい時
+
+
+#以下コピペで動きます
+
+class Playful:
+    def __init__(self, human):
+        self.human = human
+        
+
+    def meet(self, pets):
+        self.pets = pets # コンストラクタ内に記述すると上記コードのようにオブジェクト作成時に指定した引数を要求されるため meetメソッドの引数としてクラス変数で生成しておくと独立した引数として扱える
+        print(self.human + "は" + self.pets + "にほえられた。")
+
+my = Playful("私")
+president = Playful("社長")
+
+humanlist = [my, president]
+
+for (pets,humanchoice) in enumerate(humanlist):
+    #print(pets) #petsはindexとして0,1が割り当てられる
+    if pets == 0:
+        pets = "柴犬" # キャスト(型変換)されていることに注意
+    elif pets == 1:
+        pets = "マルチーズ"
+    else:
+        continue
+    humanchoice.meet(pets) # meetメソッドの引数としてpetsが割り当てできた
+
+
+#コピペここまで
+出力結果:
+私は柴犬にほえられた。
+社長はマルチーズにほえられた。
+
+
+
+クラスからメソッドを呼び出す
+
+#以下コピペで動きます
+
+class Playful:
+    def __init__(self, human):
+        self.human = human
+        
+
+    def meet(self, pets):
+        self.pets = pets # コンストラクタ内に記述すると上記コードのようにオブジェクト作成時に指定した引数を要求されるため meetメソッドの引数としてクラス変数で生成しておくと独立した引数として扱える
+        print(self.human + "は" + self.pets + "にほえられた。")
+
+class Food(Playful):
+    def __init__(self):
+        super().__init__("私")
+
+    def meet(self, pets, foodname):
+        self.pets = pets
+        self.foodname = foodname
+        print(self.human + "は" + self.pets + "に" + self.foodname + "をあげてみた")
+        self.__shout() # クラスからshoutメソッド呼び出し
+
+    def __shout(self):
+        print("たべた！ やった!")
+
+my = Playful("私")
+president = Playful("社長")
+
+humanlist = [my, president]
+
+for (pets,humanchoice) in enumerate(humanlist):
+    #print(pets) #petsはindexとして0,1が割り当てられる
+    if pets == 0:
+        pets = "柴犬"
+    elif pets == 1:
+        pets = "マルチーズ"
+    else:
+        continue
+    humanchoice.meet(pets) # meetメソッドの引数としてpetsが割り当てできた
+
+food = Food() # Foodのコンストラクタで super().__init("私") でPlayfulから継承されたhumanに割り当て
+food.meet("柴犬", "おかし") # Playfulのコンストラクタにpetsとfoodnameがない(meetメソッドにある)のでFoodクラスのmeetメソッドで割り当て(オーバーライドしていても別のメソッドから継承されていない)
+
+food._Food__shout() # アンダーバー2つ( __ )でクラス外から呼び出せないはずが アンダーバー( _ ) + クラス名で呼び出せる = ネームマングリングという
+
+#コピペここまで
+
+出力結果:
+私は柴犬にほえられた。
+社長はマルチーズにほえられた。
+私は柴犬にほえられた。
+私は柴犬におかしをあげてみた
+たべた！ やった!
+たべた！ やった!
+
+
+別のクラスのメソッドの呼び出し
+
+#以下コピペで動きます
+
+class Playful:
+    def __init__(self, human):
+        self.human = human
+        
+
+    def meet(self, pets):
+        self.pets = pets # コンストラクタ内に記述すると上記コードのようにオブジェクト作成時に指定した引数を要求されるため meetメソッドの引数としてクラス変数で生成しておくと独立した引数として扱える
+        print(self.human + "は" + self.pets + "にほえられた。")
+
+class Food(Playful):
+    def __init__(self):
+        super().__init__("私") # Playfulのコンストラクタからメソッド呼び出しができた
+        super().meet("柴犬") # 同じようにメソッド呼び出ししたことで food.meet() の　pets　引数をこちらに移動できた
+
+    def meet(self, foodname):
+        self.foodname = foodname
+        print(self.human + "は" + self.pets + "に" + self.foodname + "をあげてみた")
+        self.__shout() # クラスからshoutメソッド呼び出し
+
+    def __shout(self):
+        print("たべた！ やった!")
+
+my = Playful("私")
+president = Playful("社長")
+
+humanlist = [my, president]
+
+for (pets,humanchoice) in enumerate(humanlist):
+    #print(pets) #petsはindexとして0,1が割り当てられる
+    if pets == 0:
+        pets = "柴犬"
+    elif pets == 1:
+        pets = "マルチーズ"
+    else:
+        continue
+    humanchoice.meet(pets) # meetメソッドの引数としてpetsが割り当てできた
+
+food = Food() # Foodのコンストラクタで super().__init("私") でPlayfulから継承されたhumanに割り当て
+food.meet("おかし") # Playfulのコンストラクタにpetsとfoodnameがない(meetメソッドにある)のでFoodクラスのmeetメソッドで割り当て(オーバーライドしていても別のメソッドから継承されていない)
+
+food._Food__shout() # アンダーバー2つ( __ )でクラス外から呼び出せないはずが アンダーバー( _ ) + クラス名で呼び出せる = ネームマングリングという
+
+#コピペここまで
+
+出力結果:
+私は柴犬にほえられた。
+社長はマルチーズにほえられた。
+私は柴犬におかしをあげてみた
+たべた！ やった!
+たべた！ やった!
+
+
+クラス変数とクラスメソッド
+
+オブジェクト間で共通して利用できる変数やメソッドのこと
+
+#以下コピペで動きます
+
+class Playful:
+    humancounter = 0 # クラス変数
+    def __init__(self, human):
+        self.human = human
+        Playful.humancounter += 1 # クラス変数のカウント追加(ここではコンストラクタが呼ばれるタイミングで加算)
+        print(str(Playful.humancounter) + "人目、" + self.human + "が登場")
+
+    def meet(self, pets):
+        self.pets = pets # コンストラクタ内に記述すると上記コードのようにオブジェクト作成時に指定した引数を要求されるため meetメソッドの引数としてクラス変数で生成しておくと独立した引数として扱える
+        print(self.human + "は" + self.pets + "にほえられた。")
+
+class Food(Playful):
+    def __init__(self):
+        super().__init__("私") # Playfulのコンストラクタからメソッド呼び出しができた
+        super().meet("柴犬") # 同じようにメソッド呼び出ししたことで food.meet() の　pets　引数をこちらに移動できた
+
+    def meet(self, foodname):
+        self.foodname = foodname
+        print(self.human + "は" + self.pets + "に" + self.foodname + "をあげてみた")
+        self.__shout() # クラスからshoutメソッド呼び出し
+
+    def __shout(self):
+        print("たべた！ やった!")
+
+my = Playful("私")
+president = Playful("社長")
+
+humanlist = [my, president]
+
+for (pets,humanchoice) in enumerate(humanlist):
+    #print(pets) #petsはindexとして0,1が割り当てられる
+    if pets == 0:
+        pets = "柴犬"
+    elif pets == 1:
+        pets = "マルチーズ"
+    else:
+        continue
+    humanchoice.meet(pets) # meetメソッドの引数としてpetsが割り当てできた
+
+food = Food() # Foodのコンストラクタで super().__init("私") でPlayfulから継承されたhumanに割り当て Playfulを継承しているのでクラス変数のhumancounterがカウントされていることに注目
+food.meet("おかし") # Playfulのコンストラクタにpetsとfoodnameがない(meetメソッドにある)のでFoodクラスのmeetメソッドで割り当て(オーバーライドしていても別のメソッドから継承されていない)
+
+food._Food__shout() # アンダーバー2つ( __ )でクラス外から呼び出せないはずが アンダーバー( _ ) + クラス名で呼び出せる = ネームマングリングという
+
+print(str(Playful.humancounter -1) + "人はペットに遭遇した") # クラス名 + ドット( . ) + 変数名 でクラスの外にクラス変数を呼び出せる
+
+#コピペここまで
+
+出力結果:
+1人目、私が登場
+2人目、社長が登場
+私は柴犬にほえられた。
+社長はマルチーズにほえられた。
+3人目、私が登場
+私は柴犬にほえられた。
+私は柴犬におかしをあげてみた
+たべた！ やった!
+たべた！ やった!
+2人はペットに遭遇した
+
+クラス変数を外部で使用しづらいようにマングリング可(現在使用可能状態)
+
+※もうひとつ下のコピペコードで正常なマングリング化ができていますので参照ください。
+
+#以下コピペで動きます
+
+class Playful:
+    __humancounter = 0 # クラス変数(マングリング)
+    def __init__(self, human):
+        self.human = human
+        Playful.__humancounter += 1 # (マングリング)　クラス変数のカウント追加(ここではコンストラクタが呼ばれるタイミングで加算)
+        print(str(Playful.__humancounter) + "人目、" + self.human + "が登場") # (マングリング)
+
+    def meet(self, pets):
+        self.pets = pets # コンストラクタ内に記述すると上記コードのようにオブジェクト作成時に指定した引数を要求されるため meetメソッドの引数としてクラス変数で生成しておくと独立した引数として扱える
+        print(self.human + "は" + self.pets + "にほえられた。")
+
+class Food(Playful):
+    def __init__(self):
+        super().__init__("私") # Playfulのコンストラクタからメソッド呼び出しができた
+        super().meet("柴犬") # 同じようにメソッド呼び出ししたことで food.meet() の　pets　引数をこちらに移動できた
+
+    def meet(self, foodname):
+        self.foodname = foodname
+        print(self.human + "は" + self.pets + "に" + self.foodname + "をあげてみた")
+        self.__shout() # クラスからshoutメソッド呼び出し
+
+    def __shout(self):
+        print("たべた！ やった!")
+
+my = Playful("私")
+president = Playful("社長")
+
+humanlist = [my, president]
+
+for (pets,humanchoice) in enumerate(humanlist):
+    #print(pets) #petsはindexとして0,1が割り当てられる
+    if pets == 0:
+        pets = "柴犬"
+    elif pets == 1:
+        pets = "マルチーズ"
+    else:
+        continue
+    humanchoice.meet(pets) # meetメソッドの引数としてpetsが割り当てできた
+
+food = Food() # Foodのコンストラクタで super().__init("私") でPlayfulから継承されたhumanに割り当て Playfulを継承しているのでクラス変数のhumancounterがカウントされていることに注目
+food.meet("おかし") # Playfulのコンストラクタにpetsとfoodnameがない(meetメソッドにある)のでFoodクラスのmeetメソッドで割り当て(オーバーライドしていても別のメソッドから継承されていない)
+
+food._Food__shout() # アンダーバー2つ( __ )でクラス外から呼び出せないはずが アンダーバー( _ ) + クラス名で呼び出せる = ネームマングリングという
+
+print(str(Playful._Playful__humancounter -1) + "人はペットに遭遇した") # クラスの外で変更しづらいようにマングリングしておくとよい(現在は使用可の状態 → _Playful を省略すると使用不可になる)
+
+#コピペここまで
+
+出力結果:
+1人目、私が登場
+2人目、社長が登場
+私は柴犬にほえられた。
+社長はマルチーズにほえられた。
+3人目、私が登場
+私は柴犬にほえられた。
+私は柴犬におかしをあげてみた
+たべた！ やった!
+たべた！ やった!
+2人はペットに遭遇した
+
+#以下コピペで動きます
+
+class Playful:
+    __humancounter = 0 # クラス変数(マングリング)
+
+    def summary(cls): # cls はクラス自体が入る引数 (クラスメソッドでは必ず必要)
+        print(str(Playful.__humancounter -1) + "人はペットに遭遇した") # クラスの外で変更しづらいようにマングリングしておくとよい(現在は使用可の状態 → _Playful を省略すると使用不可になる)
+
+
+    def __init__(self, human):
+        self.human = human
+        Playful.__humancounter += 1 # (マングリング)　クラス変数のカウント追加(ここではコンストラクタが呼ばれるタイミングで加算)
+        print(str(Playful.__humancounter) + "人目、" + self.human + "が登場") # (マングリング)
+
+    def meet(self, pets):
+        self.pets = pets # コンストラクタ内に記述すると上記コードのようにオブジェクト作成時に指定した引数を要求されるため meetメソッドの引数としてクラス変数で生成しておくと独立した引数として扱える
+        print(self.human + "は" + self.pets + "にほえられた。")
+
+    summary = classmethod(summary) # summaryメソッドをオブジェクト化しておいて呼び出す 下のコードに変更可能
+
+class Food(Playful):
+    def __init__(self):
+        super().__init__("私") # Playfulのコンストラクタからメソッド呼び出しができた
+        super().meet("柴犬") # 同じようにメソッド呼び出ししたことで food.meet() の　pets　引数をこちらに移動できた
+
+    def meet(self, foodname):
+        self.foodname = foodname
+        print(self.human + "は" + self.pets + "に" + self.foodname + "をあげてみた")
+        self.__shout() # クラスからshoutメソッド呼び出し
+
+    def __shout(self):
+        print("たべた！ やった!")
+
+my = Playful("私")
+president = Playful("社長")
+
+humanlist = [my, president]
+
+for (pets,humanchoice) in enumerate(humanlist):
+    #print(pets) #petsはindexとして0,1が割り当てられる
+    if pets == 0:
+        pets = "柴犬"
+    elif pets == 1:
+        pets = "マルチーズ"
+    else:
+        continue
+    humanchoice.meet(pets) # meetメソッドの引数としてpetsが割り当てできた
+
+food = Food() # Foodのコンストラクタで super().__init("私") でPlayfulから継承されたhumanに割り当て Playfulを継承しているのでクラス変数のhumancounterがカウントされていることに注目
+food.meet("おかし") # Playfulのコンストラクタにpetsとfoodnameがない(meetメソッドにある)のでFoodクラスのmeetメソッドで割り当て(オーバーライドしていても別のメソッドから継承されていない)
+
+food._Food__shout() # アンダーバー2つ( __ )でクラス外から呼び出せないはずが アンダーバー( _ ) + クラス名で呼び出せる = ネームマングリングという
+
+Playful.summary() # マングリングしたものをクラスメソッドとして呼び出す
+
+#コピペここまで
+
+出力結果:
+1人目、私が登場
+2人目、社長が登場
+私は柴犬にほえられた。
+社長はマルチーズにほえられた。
+3人目、私が登場
+私は柴犬にほえられた。
+私は柴犬におかしをあげてみた
+たべた！ やった!
+たべた！ やった!
+2人はペットに遭遇した
+
+クラスメソッドの別の記述(デコレータを使用)
+
+#以下コピペで動きます
+
+class Playful:
+    __humancounter = 0 # クラス変数(マングリング)
+
+    @classmethod # デコレータ(すでに定義されている関数に処理を追加することができる → 自分でも作成可能)を使用することによりオブジェクト化の手間が省ける
+    def summary(cls):
+        print(str(Playful.__humancounter -1) + "人はペットに遭遇した") # クラスの外で変更しづらいようにマングリングしておくとよい(現在は使用可の状態 → _Playful を省略すると使用不可になる)
+
+
+    def __init__(self, human):
+        self.human = human
+        Playful.__humancounter += 1 # (マングリング)　クラス変数のカウント追加(ここではコンストラクタが呼ばれるタイミングで加算)
+        print(str(Playful.__humancounter) + "人目、" + self.human + "が登場") # (マングリング)
+
+    def meet(self, pets):
+        self.pets = pets # コンストラクタ内に記述すると上記コードのようにオブジェクト作成時に指定した引数を要求されるため meetメソッドの引数としてクラス変数で生成しておくと独立した引数として扱える
+        print(self.human + "は" + self.pets + "にほえられた。")
+
+class Food(Playful):
+    def __init__(self):
+        super().__init__("私") # Playfulのコンストラクタからメソッド呼び出しができた
+        super().meet("柴犬") # 同じようにメソッド呼び出ししたことで food.meet() の　pets　引数をこちらに移動できた
+
+    def meet(self, foodname):
+        self.foodname = foodname
+        print(self.human + "は" + self.pets + "に" + self.foodname + "をあげてみた")
+        self.__shout() # クラスからshoutメソッド呼び出し
+
+    def __shout(self):
+        print("たべた！ やった!")
+
+my = Playful("私")
+president = Playful("社長")
+
+humanlist = [my, president]
+
+for (pets,humanchoice) in enumerate(humanlist):
+    #print(pets) #petsはindexとして0,1が割り当てられる
+    if pets == 0:
+        pets = "柴犬"
+    elif pets == 1:
+        pets = "マルチーズ"
+    else:
+        continue
+    humanchoice.meet(pets) # meetメソッドの引数としてpetsが割り当てできた
+
+food = Food() # Foodのコンストラクタで super().__init("私") でPlayfulから継承されたhumanに割り当て Playfulを継承しているのでクラス変数のhumancounterがカウントされていることに注目
+food.meet("おかし") # Playfulのコンストラクタにpetsとfoodnameがない(meetメソッドにある)のでFoodクラスのmeetメソッドで割り当て(オーバーライドしていても別のメソッドから継承されていない)
+
+food._Food__shout() # アンダーバー2つ( __ )でクラス外から呼び出せないはずが アンダーバー( _ ) + クラス名で呼び出せる = ネームマングリングという
+
+Playful.summary() # マングリングしたものを呼び出す
+
+#コピペここまで
+
+出力結果:
+1人目、私が登場
+2人目、社長が登場
+私は柴犬にほえられた。
+社長はマルチーズにほえられた。
+3人目、私が登場
+私は柴犬にほえられた。
+私は柴犬におかしをあげてみた
+たべた！ やった!
+たべた！ やった!
+2人はペットに遭遇した
+
+
+標準ライブラリ
+
+Pyhtonに組み込まれているライブラリ
+
+#以下コピペで動きます
+
+from datetime import datetime, timedelta, timezone# from 読み込みたいモジュール import 使いたいクラスや変数
+
+today = datetime.now() # .now() メソッドはクラスメソッドなのでオブジェクトを作らなくても呼び出せる 現在の日時を含んだ datetime オブジェクトが返される
+print(today) # 協定世界時が表示される
+
+jst = timezone(timedelta(hours=9)) # 現在の日本時刻は .now() メソッドの引数に日本のタイムゾーン情報を渡す
+today = datetime.now(jst) # .now() メソッドの引数に日本のタイムゾーン情報が渡された
+print(jst)
+
+print(today.year) # 年月日別に表示
+print(today.month)
+print(today.day)
+
+tday = str(today.day).rstrip("%") # print(today.day,  end="日")　にすると行末に % が表示されるので .rstrip() で("%")指定して行末削除したものを変数に入れprint文で文字列と連結して表示
+print(today.year, end="年") # 年月日別に表示を見やすくした end= は改行しない
+print(today.month, end="月")
+print(tday + "日")
+
+day = datetime.strptime("2017/01/10 18:41:35", "%Y/%m/%d %H:%M:%S") # datetimeオブジェクトを作成 第1引数は作成したい日時 第2引数は書式の形式
+print(day)
+
+# コピペここまで
+
+外部ライブラリ
+
+Pythonに組み込まれていないライブラリ
+
+------------------ここまでGitHub push済---------------------
+5.txtへ
