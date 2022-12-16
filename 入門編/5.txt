@@ -1,0 +1,644 @@
+例外処理とは実行時エラーのこと(実行時エラーはプログラムが完走せずに強制終了されるので危険という認識)
+
+例外処理は実行時に発生する問題に対応できる
+
+メリットはプログラムを安定して動作することができる
+
+システムの品質を高めることができる
+
+エラーメッセージも読み取れデバッグに役立てるようになる
+
+
+
+例外が発生する例
+
+・ゼロで割り算
+・数値変換で数字ではない文字を指定
+・配列の範囲外にアクセス
+・ファイルが存在しない
+・引数が不正
+
+例外処理の機能
+
+・try あらかじめコードを指定してプログラム実行時に処理の問題を検出
+
+・except 問題を検出した時どのように対応するか記述しておく
+
+・raise 対応を記述していない場合メソッドの呼び出し元に対応を任せることもできる
+
+
+#以下コピペで動きます
+
+print("start")
+a = 1
+print(a)
+print("end")
+
+print("start")
+a = 1
+print(b) # bは定義のない指定なのでエラーが表示される
+print("end")
+
+# コピペここまで
+
+出力結果:
+start
+1
+end
+start
+Traceback (most recent call last):
+  File "/Users/user/Desktop/test.py", line 9, in <module>
+    print(b)
+NameError: name 'b' is not defined
+
+関数を呼び出した場合
+
+#以下コピペで動きます
+
+def test():
+    print("start")
+    a = 1
+    print(b)
+    print("end")
+
+test() # まず関数でのエラーが表示されてその下に対象の行が表示される
+
+# コピペここまで
+
+出力結果:
+start
+Traceback (most recent call last):
+  File "/Users/user/Desktop/test.py", line 8, in <module>
+    test()
+  File "/Users/user/Desktop/test.py", line 5, in test
+    print(b)
+NameError: name 'b' is not defined
+
+
+
+処理の流れで追いかけてみる
+
+#以下コピペで動きます
+
+print("処理開始")
+num = 1
+ans = 5 / num
+print(ans)
+print("処理終了")
+
+print("処理開始")
+num = 0
+ans = 5 / num  # 0での除算は例外発生
+print(ans)
+print("処理終了") # 正常終了していない
+
+# コピペここまで
+
+出力結果:
+処理開始
+5.0
+処理終了
+処理開始
+Traceback (most recent call last):
+  File "/Users/user/Desktop/test.py", line 11, in <module>
+    ans = 5 / num
+ZeroDivisionError: division by zero
+
+
+例外処理を追加
+
+#以下コピペで動きます
+
+print("処理開始")
+try:
+
+    num = 0
+    ans = 5 / num  # 0での除算は例外発生 → exceptブロックへ処理が移行
+    print(ans)
+except ZeroDivisionError as e: # exceptブロックを例外ハンドラという(捕捉したいエラー名は ZeroDivisionError 変数 e として扱う = ZeroDivisionErrorオブジェクト)
+    print(e)
+print("処理終了") # 正常終了している
+
+# コピペここまで
+
+出力結果:
+処理開始
+division by zero
+処理終了
+
+
+例外が発生してもしなくても表示したいコードがある場合
+
+#以下コピペで動きます
+
+print("処理開始")
+try:
+
+    num = 0
+    ans = 5 / num  # 0での除算は例外発生 → exceptブロックへ処理が移行
+    print(ans)
+except ZeroDivisionError as e: # exceptブロックを例外ハンドラという(捕捉したいエラー名は ZeroDivisionError 変数 e として扱う = ZeroDivisionErrorオブジェクト)
+    print(e)
+finally: # 例外の有無に関わらず必ず処理される
+    print("処理終了") # 正常終了している
+
+# コピペここまで
+
+出力結果:
+処理開始
+division by zero
+処理終了
+
+
+いろいろな形式で例外に対応
+
+#以下コピペで動きます
+
+print("処理開始")
+try:
+
+    num = 0
+    ans = 5 / num  # 0での除算は例外発生 → exceptブロックへ処理が移行
+    print(ans)
+except ZeroDivisionError as e: # exceptブロックを例外ハンドラという(捕捉したいエラー名は ZeroDivisionError 変数 e として扱う)
+    print("0で割り算がされています。0では割り算ができません.") # エラー名ではなくわかりやすい文字列でも伝えられる
+finally: # 例外の有無に関わらず必ず処理される
+    print("処理終了") # 正常終了している
+
+# コピペここまで
+
+出力結果:
+処理開始
+0で割り算がされています。0では割り算ができません.
+処理終了
+
+
+#以下コピペで動きます
+
+import traceback
+
+print("処理開始")
+try:
+
+    num = 0
+    ans = 5 / num  # 0での除算は例外発生 → exceptブロックへ処理が移行
+    print(ans)
+except ZeroDivisionError as e: # exceptブロックを例外ハンドラという(捕捉したいエラー名は ZeroDivisionError 変数 e として扱う)
+    print("0で割り算がされています。0では割り算ができません.") # エラー名ではなくわかりやすい文字列でも伝えられる
+    print(traceback.format_exc()) # traceback はプログラムの実行過程を記録したスタックトレースを表示 .format_exc() は文字列として取得できる
+finally: # 例外の有無に関わらず必ず処理される
+    print("処理終了") # 正常終了している
+
+# コピペここまで
+
+出力結果:
+処理開始
+0で割り算がされています。0では割り算ができません.
+Traceback (most recent call last):
+  File "/Users/user/Desktop/test.py", line 9, in <module>
+    ans = 5 / num  # 0での除算は例外発生 → exceptブロックへ処理が移行
+ZeroDivisionError: division by zero
+
+処理終了
+
+
+出力タブではなく、実行時エラータブにエラーメッセージを出力
+
+#以下コピペで動きます
+
+import traceback, sys
+
+print("処理開始")
+try:
+
+    num = 0
+    ans = 5 / num  # 0での除算は例外発生 → exceptブロックへ処理が移行
+    print(ans)
+except ZeroDivisionError as e: # exceptブロックを例外ハンドラという(捕捉したいエラー名は ZeroDivisionError 変数 e として扱う)
+    print("0で割り算がされています。0では割り算ができません.") # エラー名ではなくわかりやすい文字列でも伝えられる
+    sys.stderr.write(traceback.format_exc()) # sys.stderr.write が書き出し、 traceback.format_exc() がスタックトレースの表示(別の出力タブへの表示は下記のキーワードで検索してください)
+finally: # 例外の有無に関わらず必ず処理される
+    print("処理終了") # 正常終了している
+
+# コピペここまで
+
+出力結果:
+処理開始
+0で割り算がされています。0では割り算ができません.
+Traceback (most recent call last):
+  File "/Users/user/Desktop/test.py", line 9, in <module>
+    ans = 5 / num  # 0での除算は例外発生 → exceptブロックへ処理が移行
+ZeroDivisionError: division by zero
+処理終了
+
+
+※スタックトレースなどの表示を標準エラー出力へ切り替えるには　<標準出力 標準エラー出力 両方> などで検索
+こちらに書けない理由としてはOSの内部構造がWIndowsとMacによって違う、Macの標準ShellがBash/Zshに分かれる、それぞれの設定の仕方にいくつかの選別要素がある、などのためご自身で検索して設定してください。
+
+
+NameErrorやTypeErrorも補足する
+
+#以下コピペで動きます
+
+import traceback, sys
+
+print("処理開始")
+try:
+
+    num = 1
+    ans = 5 / num  # 0での除算は例外発生 → exceptブロックへ処理が移行
+    print(ans2) # ans2で変数名のエラー
+except ZeroDivisionError as e: # exceptブロックを例外ハンドラという(捕捉したいエラー名は ZeroDivisionError 変数 e として扱う)
+    print("0で割り算がされています。0では割り算ができません.") # エラー名ではなくわかりやすい文字列でも伝えられる
+    sys.stderr.write(traceback.format_exc()) # sys.stderr.write が書き出し、 traceback.format_exc() がスタックトレースの表示
+
+except NameError as e:
+    print("変数の名前が違います") # NameErrorで捕まっている
+
+finally: # 例外の有無に関わらず必ず処理される
+    print("処理終了") # 正常終了している
+
+# コピペここまで
+
+出力結果:
+処理開始
+変数の名前が違います
+処理終了
+
+
+#以下コピペで動きます
+
+import traceback, sys
+
+print("処理開始")
+try:
+
+    num = "1" # 文字列を代入することでエラー
+    ans = 5 / num  # 0での除算は例外発生 → exceptブロックへ処理が移行
+    print(ans)
+except ZeroDivisionError as e: # exceptブロックを例外ハンドラという(捕捉したいエラー名は ZeroDivisionError 変数 e として扱う)
+    print("0で割り算がされています。0では割り算ができません.") # エラー名ではなくわかりやすい文字列でも伝えられる
+    sys.stderr.write(traceback.format_exc()) # sys.stderr.write が書き出し、 traceback.format_exc() がスタックトレースの表示
+
+except NameError as e:
+    print("変数の名前が違います") 
+
+except TypeError as e:
+    print("変数の型が間違っています") # TypeErrorで捕まっている
+
+finally: # 例外の有無に関わらず必ず処理される
+    print("処理終了") # 正常終了している
+
+# コピペここまで
+
+出力結果:
+処理開始
+変数の型が間違っています
+処理終了
+
+
+複数の例外に対応する処理
+
+#以下コピペで動きます
+
+import traceback, sys
+
+print("処理開始")
+try:
+
+    num = "1" # 文字列を代入することでエラー
+    ans = 5 / num  # 0での除算は例外発生 → exceptブロックへ処理が移行
+    print(ans)
+except Exception as e: # Exception 指定ですべてのエラーに対応できる(英文は基本的にGoogle翻訳にコピペでほぼ解決します) ExceptionはZeroDivisionErrorなどのスーパークラスなので(一番上のクラスはBaseExceptionクラス)すべてのエラーのクラスに対応できる
+    print("予期せぬエラーが発生")
+    print(e)
+
+finally: # 例外の有無に関わらず必ず処理される
+    print("処理終了") # 正常終了している
+
+# コピペここまで
+
+出力結果:
+処理開始
+予期せぬエラーが発生
+unsupported operand type(s) for /: 'int' and 'str'
+処理終了
+
+
+意図的な例外処理
+
+
+#以下コピペで動きます
+
+import traceback, sys
+
+print("処理開始")
+try:
+    print("処理2")
+    raise Exception # 例外の発生
+    print("処理3") # VSCodeでは無効なコードとして暗転している
+
+except Exception as e: # Exception 指定ですべてのエラーに対応できる(英文は基本的にGoogle翻訳にコピペでほぼ解決します) Exceptionはスーパークラスなのですべてのエラーのクラスに対応できる
+    print("予期せぬエラーが発生")
+    print(e) # print文ではエラーの表示ができていない
+    
+finally: # 例外の有無に関わらず必ず処理される
+    print("処理終了") # 正常終了している
+
+# コピペここまで
+
+出力結果:
+処理開始
+処理2
+予期せぬエラーが発生
+
+処理終了
+
+
+#以下コピペで動きます
+
+import traceback, sys
+
+print("処理開始")
+try:
+    print("処理2")
+    raise Exception("意図的な例外") # 例外の発生(出力の表示位置に注目)
+    print("処理3") # VSCodeでは無効なコードとして暗転している
+
+except Exception as e: # Exception 指定ですべてのエラーに対応できる(英文は基本的にGoogle翻訳にコピペでほぼ解決します) Exceptionはスーパークラスなのですべてのエラーのクラスに対応できる
+    print("予期せぬエラーが発生")
+    #print(e) # print文ではエラーの表示ができていない
+    sys.stderr.write(traceback.format_exc())
+    
+finally: # 例外の有無に関わらず必ず処理される
+    print("処理終了") # 正常終了している
+
+# コピペここまで
+
+出力結果:
+処理開始
+処理2
+予期せぬエラーが発生
+Traceback (most recent call last):
+  File "/Users/user/Desktop/test.py", line 8, in <module>
+    raise Exception("意図的な例外") # 例外の発生(出力の表示位置に注目)
+Exception: 意図的な例外
+処理終了
+
+
+呼び出し元への例外の流れ
+
+まずは正常な流れから
+
+#以下コピペで動きます
+
+print("プログラム開始")
+
+def test_exception(number):
+    print("処理2")
+    ans = 5 / number
+    return ans
+
+print("処理開始")
+ans = test_exception(1)
+print("プログラム終了")
+
+# コピペここまで
+
+出力結果:
+プログラム開始
+処理開始
+処理2
+プログラム終了
+
+
+オブジェクトの引数が0の場合
+
+#以下コピペで動きます
+
+print("プログラム開始")
+
+def test_exception(number):
+    print("処理2")
+    ans = 5 / number
+    return ans
+
+print("処理開始")
+ans = test_exception(0)
+print("プログラム終了") # 強制終了で処理されていない
+
+# コピペここまで
+
+出力結果:
+プログラム開始
+処理開始
+処理2
+Traceback (most recent call last):
+  File "/Users/user/Desktop/test.py", line 11, in <module>
+    ans = test_exception(0)
+  File "/Users/user/Desktop/test.py", line 7, in test_exception
+    ans = 5 / number
+ZeroDivisionError: division by zero
+
+
+#以下コピペで動きます
+import traceback, sys
+
+print("プログラム開始")
+
+def test_exception(number):
+    print("処理2")
+    ans = 5 / number
+    return ans
+
+print("処理開始")
+try:
+    ans = test_exception(0) # 呼び出し元へ例外の発生が伝わっている
+    print("処理3")
+
+except Exception as e:
+    print("エラー検出")
+    print(e)
+
+print("プログラム終了")
+
+# コピペここまで
+
+出力結果:
+プログラム開始
+処理開始
+処理2
+エラー検出
+division by zero
+プログラム終了
+
+
+関数側にも例外ハンドラを作りその例外を呼び出し元に返す
+
+まずは正常な流れから
+
+#以下コピペで動きます
+import traceback, sys
+
+print("プログラム開始")
+
+def test_exception(number):
+    print("処理2")
+    try:
+        print("処理3")
+        ans = 5 / number
+        return ans
+        print("処理4")
+    except Exception as e:
+        print("処理5")
+        raise e("意図的な例外")
+    print("処理6")
+print("処理開始")
+try:
+    ans = test_exception(1) # 呼び出し元へ例外の発生が伝わっている
+    print("処理7")
+
+except Exception as e:
+    print("エラー検出")
+    print(e)
+
+print("プログラム終了")
+
+# コピペここまで
+
+出力結果:
+プログラム開始
+処理開始
+処理2
+処理3
+処理7
+プログラム終了
+
+
+エラーのある状態
+
+#以下コピペで動きます
+import traceback, sys
+
+print("プログラム開始")
+
+def test_exception(number):
+    print("処理2")
+    try:
+        print("処理3")
+        ans = 5 / number
+        return ans
+        print("処理4")
+    except Exception as e:
+        print("処理5")
+        raise e # raise Exceptionとは違い、 raise e("意図的な例外") とすると変数の文字列が無効になっている<呼び出しエラーとして表示される = 'ZeroDivisionError' object is not callable>
+    print("処理6") # VSCodeでは暗転
+print("処理開始")
+try:
+    ans = test_exception(0) # 呼び出し元へ例外の発生が伝わっている
+    print("処理7") # VSCodeでは暗転
+
+except Exception as e:
+    print("エラー検出")
+    print(e)
+
+print("プログラム終了")
+
+# コピペここまで
+
+出力結果:
+プログラム開始
+処理開始
+処理2
+処理3
+処理5
+エラー検出
+division by zero
+プログラム終了
+
+
+finallyを使用した場合の処理の順序
+
+まずは正常な流れから
+
+#以下コピペで動きます
+import traceback, sys
+
+print("プログラム開始")
+
+def test_exception(number):
+    print("処理2")
+    try:
+        print("処理3")
+        ans = 5 / number
+        return ans
+        print("処理4")
+    except Exception as e:
+        print("処理5")
+        raise e # raise Exceptionとは違い、 raise e("意図的な例外") とすると変数の文字列が無効になっている<呼び出しエラーとして表示される = 'ZeroDivisionError' object is not callable>
+    print("処理6")
+print("処理開始")
+try:
+    ans = test_exception(1) # 呼び出し元へ例外の発生が伝わっている
+    print("処理7")
+
+except Exception as e:
+    print("エラー検出")
+    print(e)
+
+print("プログラム終了")
+
+# コピペここまで
+
+出力結果:
+プログラム開始
+処理開始
+処理2
+処理3
+処理7
+プログラム終了
+                 
+
+上記処理6を必ず実行させたい
+
+#以下コピペで動きます
+import traceback, sys
+
+print("プログラム開始")
+
+def test_exception(number):
+    print("処理2")
+    try:
+        print("処理3")
+        ans = 5 / number
+        return ans
+        print("処理4")
+    except Exception as e:
+        print("処理5")
+        raise e # raise Exceptionとは違い、 raise e("意図的な例外") とすると変数の文字列が無効になっている<呼び出しエラーとして表示される = 'ZeroDivisionError' object is not callable>
+    finally: # finallyを追加で処理6が必ず実行される
+        print("処理6")
+print("処理開始")
+try:
+    ans = test_exception(1) # 呼び出し元へ例外の発生が伝わっている
+    print("処理7")
+
+except Exception as e:
+    print("エラー検出")
+    print(e)
+
+print("プログラム終了")
+
+# コピペここまで
+
+出力結果:
+プログラム開始
+処理開始
+処理2
+処理3
+処理6
+処理7
+プログラム終了
+
+------------------ここまでGitHub push済---------------------
+入門編終了
